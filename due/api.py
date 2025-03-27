@@ -21,12 +21,12 @@ class MachineAPI:
         self.gcode_filepath = "C:/Users/User/Documents/Due Laser/Github/DueGalvoPlotter/due/weg_50x50.g"  # Variável de instância ao invés de global
 
         # Adicionando rotas à API
-        self.app.post("/set_gcode_filepath")(self.set_gcode_filepath)
-        self.app.get("/get_gcode_filepath")(self.get_gcode_filepath)
+        self.app.post("/gcode_filepath")(self.set_gcode_filepath)
+        self.app.get("/gcode_filepath")(self.get_gcode_filepath)
+        self.app.post("/light")(self.light)
         self.app.post("/mark")(self.mark)
         self.app.post("/stop")(self.stop)
-        self.app.post("/light")(self.light)
-        self.app.get("/read_data")(self.read_data)
+        self.app.get("/machine_status")(self.machine_status)
 
     class FilePathRequest(BaseModel):
         filePath: str
@@ -55,10 +55,6 @@ class MachineAPI:
         await self.machine_control.mark()
         return {"message": "Marking process started", "filePath": self.gcode_filepath}
 
-    async def stop(self):
-        await self.machine_control.stop()
-        return {"message": "Marking stopped"}
-
     async def light(self):
         """Executa o light."""
         if self.settings_file is None:
@@ -70,13 +66,13 @@ class MachineAPI:
         asyncio.create_task(self.machine_control.light())
         return {"message": "Lighting process started", "filePath": self.gcode_filepath}
     
-    async def get_data_from_database(self):
-        # Simula uma operação de banco de dados assíncrona
-        await asyncio.sleep(2)  # Simula a espera de 2 segundos
-        return {"data": "example data"}
-    async def read_data(self):
-        data = await self.get_data_from_database()  # Chama a função assíncrona
-        return data
+    async def stop(self):
+        await self.machine_control.stop()
+        return {"message": "Marking/lighting stopped"}
+    
+    async def machine_status(self):
+        status = self.machine_control.status()
+        return status
 
 # Criando uma instância da classe e acessando o FastAPI
 api_instance = MachineAPI()
