@@ -63,7 +63,8 @@ class MachineAPI:
             raise HTTPException(status_code=400, detail="GCode file path not set")
         self.machine_control.gcode_filepath = self.gcode_filepath
         self.machine_control.settings_file = self.settings_file
-        asyncio.create_task(self.machine_control.light())
+        #asyncio.create_task(self.machine_control.light())
+        await self.machine_control.light()
         return {"message": "Lighting process started", "filePath": self.gcode_filepath}
     
     async def stop(self):
