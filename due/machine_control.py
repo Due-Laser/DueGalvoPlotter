@@ -62,8 +62,6 @@ class MachineControl():
             for point in points:
                 s_val = point[0]
                 x, y = utils.mm_to_galvo(point[1], point[2])
-                print (point[1], point[2])
-                print (x, y)
                 if s_val == 0:
                     c.dark(x, y)
                 else:
