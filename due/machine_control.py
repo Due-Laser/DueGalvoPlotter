@@ -5,29 +5,31 @@ from galvo.controller import GalvoController
 
 class MachineControl():
     def __init__(self, settings_file):
-        #self.cotroller = GalvoController()
         self.settings_file = settings_file
         self.gcode_filepath = None
         self.controller = GalvoController(self.settings_file)
         self.stop_job = False
         self.current_task = None  # Variável para armazenar a task atual
 
-    def convert_gcode_to_job(self):
-        points = utils.parse_gcode(self.gcode_filepath)
-        #print(points)
-        return points
+    def convert_gcode_to_light_job(self, points):
+        with self.controller.lighting() as c:
+            for point in points:
+                s_val = point[0]
+                x, y = utils.mm_to_galvo(point[1], point[2])
+                if s_val == 0:
+                    c.dark(x, y)
+                else:
+                    c.light(x, y)
     
     async def _light_loop(self):
         """Loop de light executado como uma task separada."""
         self.stop_job = False
         self.controller.connect_if_needed()
-
+        points = utils.parse_gcode(self.gcode_filepath)
         i = 0
-        while not self.stop_job and i < 10:
+        while not self.stop_job:
             print("loop " + str(i))
-            with self.controller.lighting() as c:
-                c.dark(0x8000, 0x8000)
-                c.light(0x2000, 0x2000)
+            self.convert_gcode_to_light_job(points)
             await asyncio.sleep(0.1)  # Simula espera não bloqueante
             self.controller.wait_for_machine_idle()
             i += 1
@@ -44,8 +46,6 @@ class MachineControl():
             self.stop_job = True
             return
 
-        self.convert_gcode_to_job()
-
         # Cancela a task atual, se estiver em execução
         if self.current_task and not self.current_task.done():
             print("Stopping current task...")
@@ -57,21 +57,29 @@ class MachineControl():
         print("New lighting task started")
         return
     
+    def convert_gcode_to_mark_job(self, points):
+        with self.controller.marking() as c:
+            for point in points:
+                s_val = point[0]
+                x, y = utils.mm_to_galvo(point[1], point[2])
+                print (point[1], point[2])
+                print (x, y)
+                if s_val == 0:
+                    c.dark(x, y)
+                else:
+                    c.mark(x, y)
+    
     async def _mark_loop(self):
         """Loop de marcação executado como uma task separada."""
         self.stop_job = False
         self.controller.connect_if_needed()
-
-        i = 0
-        while not self.stop_job and i < 10:
-            print("loop " + str(i))
-            with self.controller.marking() as c:
-                c.dark(0x8000, 0x8000)
-                c.mark(0x2000, 0x2000)
-            await asyncio.sleep(0.1)  # Simula espera não bloqueante
-            self.controller.wait_for_machine_idle()
-            i += 1
-            print("end")
+        points = utils.parse_gcode(self.gcode_filepath)
+        
+        print("mark loop start")
+        self.convert_gcode_to_mark_job(points)
+        await asyncio.sleep(0.1)  # Simula espera não bloqueante
+        self.controller.wait_for_machine_idle()
+        print("end")
 
         self.controller.disconnect()
         print("Marking task finished")
@@ -83,8 +91,6 @@ class MachineControl():
             print("Controller is busy, stopping job...")
             self.stop_job = True
             return
-
-        self.convert_gcode_to_job()
 
         # Cancela a task atual, se estiver em execução
         if self.current_task and not self.current_task.done():
