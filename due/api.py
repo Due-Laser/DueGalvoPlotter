@@ -24,6 +24,7 @@ class MachineAPI:
         self.app.post("/set_gcode_filepath")(self.set_gcode_filepath)
         self.app.get("/get_gcode_filepath")(self.get_gcode_filepath)
         self.app.post("/mark")(self.mark)
+        self.app.post("/stop")(self.stop)
         self.app.post("/light")(self.light)
         self.app.get("/read_data")(self.read_data)
 
@@ -50,8 +51,13 @@ class MachineAPI:
         self.machine_control.gcode_filepath = self.gcode_filepath
         self.machine_control.settings_file = self.settings_file
         # Executa o job de forma assíncrona
-        asyncio.create_task(self.machine_control.mark())
+        #asyncio.create_task(self.machine_control.mark())
+        await self.machine_control.mark()
         return {"message": "Marking process started", "filePath": self.gcode_filepath}
+
+    async def stop(self):
+        await self.machine_control.stop()
+        return {"message": "Marking stopped"}
 
     async def light(self):
         """Executa o light."""
