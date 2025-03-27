@@ -41,16 +41,9 @@ class MachineControl():
     async def light(self):
         """Inicia o trabalho de light como uma task."""
         print("light")
-        if self.controller.is_busy():
-            print("Controller is busy, stopping job...")
-            self.stop_job = True
-            return
-
+        
         # Cancela a task atual, se estiver em execução
-        if self.current_task and not self.current_task.done():
-            print("Stopping current task...")
-            self.stop_job = True
-            await self.current_task  # Aguarda o término da task atual
+        await self.stop()
 
         # Inicia uma nova task para o loop de marcação
         self.current_task = asyncio.create_task(self._light_loop())
@@ -85,16 +78,9 @@ class MachineControl():
     async def mark(self):
         """Inicia o trabalho de marcação como uma task."""
         print("mark")
-        if self.controller.is_busy():
-            print("Controller is busy, stopping job...")
-            self.stop_job = True
-            return
 
         # Cancela a task atual, se estiver em execução
-        if self.current_task and not self.current_task.done():
-            print("Stopping current task...")
-            self.stop_job = True
-            await self.current_task  # Aguarda o término da task atual
+        await self.stop()
 
         # Inicia uma nova task para o loop de marcação
         self.current_task = asyncio.create_task(self._mark_loop())
