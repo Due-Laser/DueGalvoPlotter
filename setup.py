@@ -4,6 +4,6 @@ setup(
     install_requires=[
         "pyusb",
         "fastapi",
-        "uvicorn",
+        "uvicorn"
     ],
 )
