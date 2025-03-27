@@ -4,48 +4,62 @@ import utils
 from galvo.controller import GalvoController
 
 class MachineControl():
-    def __init__(self):
+    def __init__(self, settings_file):
         #self.cotroller = GalvoController()
-        self.settings_file = None
+        self.settings_file = settings_file
         self.gcode_filepath = None
         self.controller = GalvoController(self.settings_file)
+        self.stop_job = False
     
     def convert_gcode_to_job(self):
         points = utils.parse_gcode(self.gcode_filepath)
-        print(points)
-        return
+        #print(points)
+        return points
     
     async def mark(self):
         print("mark")
+        if self.controller.is_busy():
+            print("Controller is busy, stopping job...")
+            self.stop_job = True
+            return
+        
         self.convert_gcode_to_job()
 
         self.controller.connect_if_needed()
-        
-        def my_job(c):
-            c.marking_configuration()
-            c.dark(0x8000, 0x8000)
-            c.mark(0x2000, 0x2000)
-            return True
+        self.stop_job = False
 
-        self.controller.submit(my_job)
-        time.sleep(2)
+        i = 0
+        while (self.stop_job == False and i < 10):
+            print("loop " + str(i))
+            with self.controller.marking() as c:
+                c.dark(0x8000, 0x8000)
+                c.mark(0x2000, 0x2000)
+            self.controller.wait_for_machine_idle()
+            i += 1
+            print("end")
+        
         self.controller.disconnect()
         return
 
     async def light(self):
         print("light")
-        self.convert_gcode_to_job()
-
-        self.controller.connect_if_needed()
+        if self.controller.is_busy():
+            print("Controller is busy, stopping job...")
+            self.stop_job = True
+            return
         
-        def my_job(c):
-            c.lighting_configuration()
-            c.dark(0x8000, 0x8000)
-            c.mark(0x2000, 0x2000)
-            return True
+        self.stop_job = False
 
-        self.controller.submit(my_job)
-        time.sleep(2)
+        i = 0
+        while (self.stop_job == False and i < 10):
+            print("loop " + str(i))
+            with self.controller.lighting() as c:
+                c.dark(0x8000, 0x8000)
+                c.light(0x2000, 0x2000)
+            self.controller.wait_for_machine_idle()
+            i += 1
+            print("end")
+        
         self.controller.disconnect()
         return
     

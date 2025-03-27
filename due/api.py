@@ -16,8 +16,8 @@ PORT = 5000  # Porta fixa para facilitar a execução do exemplo
 class MachineAPI:
     def __init__(self):
         self.app = FastAPI()
-        self.machine_control = MachineControl()
         self.settings_file = "settings_lmw200.json"
+        self.machine_control = MachineControl(self.settings_file)
         self.gcode_filepath = "C:/Users/User/Documents/Due Laser/Github/DueGalvoPlotter/due/weg_50x50.g"  # Variável de instância ao invés de global
 
         # Adicionando rotas à API
