@@ -14,8 +14,8 @@ class MachineControl():
     def convert_gcode_to_light_job(self, points):
         with self.controller.lighting() as c:
             for point in points:
-                s_val = point[0]
-                x, y = utils.mm_to_galvo(point[1], point[2])
+                x, y = utils.mm_to_galvo(point[0], point[1])
+                s_val = point[2]
                 if s_val == 0:
                     c.dark(x, y)
                 else:
@@ -24,7 +24,11 @@ class MachineControl():
     async def _light_loop(self):
         """Loop de light executado como uma task separada."""
         self.stop_job = False
-        self.controller.connect_if_needed()
+        try:
+            self.controller.connect_if_needed()
+        except Exception as e:
+            print("Error connecting to Galvo Controller: " + str(e))
+            return
         points = utils.parse_gcode(self.gcode_filepath)
         i = 0
         while not self.stop_job:
@@ -53,8 +57,8 @@ class MachineControl():
     def convert_gcode_to_mark_job(self, points):
         with self.controller.marking() as c:
             for point in points:
-                s_val = point[0]
-                x, y = utils.mm_to_galvo(point[1], point[2])
+                x, y = utils.mm_to_galvo(point[0], point[1])
+                s_val = point[2]
                 if s_val == 0:
                     c.dark(x, y)
                 else:
@@ -97,7 +101,19 @@ class MachineControl():
 
     def status(self):
         """Retorna o status da máquina."""
-        if self.current_task and not self.current_task.done():
-            return {"status": "busy"}
-        else:
-            return {"status": "idle"}
+        controllerStatus = "disconnected"
+        status = "disconnected"
+        try:
+            statusInt = self.controller.status()
+            print (statusInt)
+            if statusInt > -1:
+                controllerStatus = "connected"
+        except:
+            pass
+        print ("controllerStatus: " + controllerStatus)
+        if controllerStatus == "connected": # self.controller.is_connected
+            if self.current_task and not self.current_task.done():
+                status = "busy"
+            else:
+                status = "idle"
+        return {"status": controllerStatus + " - " + status}
