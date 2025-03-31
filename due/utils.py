@@ -13,6 +13,8 @@ def parse_gcode(file_path):
     current_x = None 
     current_y = None 
     current_s = None
+    current_laser_on = None
+    current_laser_power = 0
 
     with open(file_path, 'r') as f:
         for line in f:
@@ -22,14 +24,30 @@ def parse_gcode(file_path):
             x_match = re.search(r'X([-+]?[0-9]*\.?[0-9]+)', line)
             y_match = re.search(r'Y([-+]?[0-9]*\.?[0-9]+)', line)
             s_match = re.search(r'S([-+]?[0-9]*\.?[0-9]+)', line)
-            #m5_match = re.search(r'M([-+]?[0-9]*\.?[0-9]+)', line)
+            m3_match = re.search(r'\bm0?3\b', line, re.IGNORECASE)
+            m4_match = re.search(r'\bm0?4\b', line, re.IGNORECASE)
+            m5_match = re.search(r'\bm0?5\b', line, re.IGNORECASE)
             if x_match:
                 current_x = float(x_match.group(1))
             if y_match:
                 current_y = float(y_match.group(1))
             if s_match:
                 current_s = float(s_match.group(1))
-            if current_x is not None and current_y is not None and current_s is not None:
-                points.append((current_x, current_y, current_s))
-    #print (points)
+            if m3_match:
+                current_laser_on = True
+            if m4_match:
+                current_laser_on = True
+            if m5_match:
+                current_laser_on = False
+            if current_laser_on is not None:
+                if current_laser_on:
+                    if current_s is not None:
+                        current_laser_power = current_s
+                    else:
+                        current_laser_power = 0
+                else:
+                    current_laser_power = 0
+            if current_x is not None and current_y is not None:
+                points.append((current_x, current_y, current_laser_power))
+    print (points)
     return points
