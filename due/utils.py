@@ -22,6 +22,7 @@ def parse_gcode(file_path):
             x_match = re.search(r'X([-+]?[0-9]*\.?[0-9]+)', line)
             y_match = re.search(r'Y([-+]?[0-9]*\.?[0-9]+)', line)
             s_match = re.search(r'S([-+]?[0-9]*\.?[0-9]+)', line)
+            #m5_match = re.search(r'M([-+]?[0-9]*\.?[0-9]+)', line)
             if x_match:
                 current_x = float(x_match.group(1))
             if y_match:
