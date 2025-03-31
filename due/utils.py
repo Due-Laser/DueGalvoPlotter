@@ -1,7 +1,7 @@
 
 import re
 
-def mm_to_galvo(x_mm, y_mm, field_size_mm=200, galvo_range=65536, correction_x=0.864, correction_y=0.874):
+def mm_to_galvo(x_mm, y_mm, field_size_mm=200, galvo_range=65536, correction_x=0.8333, correction_y=0.8333):
     scale = galvo_range / field_size_mm
     center_offset = galvo_range / 2  
     galvo_x = x_mm * scale * correction_x + center_offset
