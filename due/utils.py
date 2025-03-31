@@ -1,5 +1,6 @@
 
 import re
+import time
 
 def mm_to_galvo(x_mm, y_mm, field_size_mm=200, galvo_range=65536, correction_x=0.8333, correction_y=0.8333):
     scale = galvo_range / field_size_mm
@@ -9,6 +10,7 @@ def mm_to_galvo(x_mm, y_mm, field_size_mm=200, galvo_range=65536, correction_x=0
     return int(galvo_x), int(galvo_y)
 
 def parse_gcode(file_path):
+    start_time = time.time()
     points = []      
     current_x = None 
     current_y = None 
@@ -49,5 +51,7 @@ def parse_gcode(file_path):
                     current_laser_power = 0
             if current_x is not None and current_y is not None:
                 points.append((current_x, current_y, current_laser_power))
-    print (points)
+    #print (points)
+    end_time = time.time()
+    print ("Tempo de leitura do arquivo: {:.2f} segundos".format(end_time - start_time))
     return points
