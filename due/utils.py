@@ -23,11 +23,12 @@ def parse_gcode(file_path):
             y_match = re.search(r'Y([-+]?[0-9]*\.?[0-9]+)', line)
             s_match = re.search(r'S([-+]?[0-9]*\.?[0-9]+)', line)
             if x_match:
-                current_x = abs(float(x_match.group(1)))
+                current_x = float(x_match.group(1))
             if y_match:
-                current_y = abs(float(y_match.group(1)))
+                current_y = float(y_match.group(1))
             if s_match:
                 current_s = float(s_match.group(1))
             if current_x is not None and current_y is not None and current_s is not None:
                 points.append((current_x, current_y, current_s))
+    print (points)
     return points
