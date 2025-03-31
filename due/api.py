@@ -4,6 +4,8 @@ import uvicorn
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from due.machine_control import MachineControl
+from due.svg2gcode import convert_svg_to_gcode
+import time
 
 def find_free_port():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -16,13 +18,14 @@ PORT = 5000  # Porta fixa para facilitar a execução do exemplo
 class MachineAPI:
     def __init__(self):
         self.app = FastAPI()
-        self.settings_file = "settings_lmw200_plastico.json"
+        self.settings_file = "settings_lmw200.json"
         self.machine_control = MachineControl(self.settings_file)
         self.gcode_filepath = "C:/Users/Guilherme/Documents/Guilherme/Github/DueGalvoPlotter/due/drawing.gcode"  # Variável de instância ao invés de global
 
         # Adicionando rotas à API
         self.app.post("/gcode_filepath")(self.set_gcode_filepath)
         self.app.get("/gcode_filepath")(self.get_gcode_filepath)
+        self.app.post("/generate_gcode_from_svg")(self.generate_gcode_from_svg)
         self.app.post("/light")(self.light)
         self.app.post("/mark")(self.mark)
         self.app.post("/stop")(self.stop)
@@ -70,6 +73,15 @@ class MachineAPI:
     async def stop(self):
         await self.machine_control.stop()
         return {"message": "Marking/lighting stopped"}
+    
+    async def generate_gcode_from_svg(self, request: FilePathRequest):
+        """Gera o G-Code a partir do SVG passado."""
+        start = time.time()
+        self.svg_filepath = request.filePath
+        convert_svg_to_gcode(self.svg_filepath, "drawing.gcode")
+        self.gcode_filepath = "C:/Users/Guilherme/Documents/Guilherme/Github/DueGalvoPlotter/due/drawing.gcode"
+        end = time.time()
+        return {"message": "GCode generated", "filePath": self.gcode_filepath, "time": end - start}
     
     async def machine_status(self):
         status = self.machine_control.status()
