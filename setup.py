@@ -4,6 +4,7 @@ setup(
     install_requires=[
         "pyusb",
         "fastapi",
-        "uvicorn"
+        "uvicorn",
+        "svg-to-gcode"
     ],
 )

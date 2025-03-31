@@ -30,5 +30,5 @@ def parse_gcode(file_path):
                 current_s = float(s_match.group(1))
             if current_x is not None and current_y is not None and current_s is not None:
                 points.append((current_x, current_y, current_s))
-    print (points)
+    #print (points)
     return points
