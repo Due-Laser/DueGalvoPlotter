@@ -1,6 +1,8 @@
 
 import re
 import time
+from shapely import Polygon
+from due.hatching import HatchingType, generate_hatching
 
 def mm_to_galvo(x_mm, y_mm, field_size_mm=200, galvo_range=65536, correction_x=0.8333, correction_y=0.8333):
     scale = galvo_range / field_size_mm
@@ -55,3 +57,12 @@ def parse_gcode(file_path):
     end_time = time.time()
     print ("Tempo de leitura do arquivo: {:.2f} segundos".format(end_time - start_time))
     return points
+
+def convert_points_to_hatching(points):
+    # Exemplo: Criando um polígono (retângulo)
+    polygon = Polygon([(0, 0), (50, 0), (50, 50), (0, 50)])  # Quadrado 50x50
+    hatching_points = generate_hatching(HatchingType.Vertical, polygon, line_spacing=5.0, power=555.0)
+
+    # Exibir o resultado
+    for point in hatching_points:
+        print(point)
