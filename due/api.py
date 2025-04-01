@@ -18,9 +18,10 @@ PORT = 5000  # Porta fixa para facilitar a execução do exemplo
 class MachineAPI:
     def __init__(self):
         self.app = FastAPI()
+        self.gcodes_folder = "C:/Users/User/Documents/Due Laser/Github/DueGalvoPlotter/due/gcodes/"
         self.settings_file = "settings/settings_lmw200.json"
         self.machine_control = MachineControl(self.settings_file)
-        self.gcode_filepath = "C:/Users/Guilherme/Documents/Guilherme/Github/DueGalvoPlotter/due/gcodes/drawing.gcode"  # Variável de instância ao invés de global
+        self.gcode_filepath = self.gcodes_folder + "drawing.gcode"  # Variável de instância ao invés de global
 
         # Adicionando rotas à API
         self.app.post("/gcode_filepath")(self.set_gcode_filepath)
@@ -78,8 +79,8 @@ class MachineAPI:
         """Gera o G-Code a partir do SVG passado."""
         start = time.time()
         self.svg_filepath = request.filePath
-        convert_svg_to_gcode(self.svg_filepath, "gcodes/drawing.gcode")
-        self.gcode_filepath = "C:/Users/Guilherme/Documents/Guilherme/Github/DueGalvoPlotter/due/gcodes/drawing.gcode"
+        convert_svg_to_gcode(self.svg_filepath, self.gcodes_folder + "/drawing.gcode")
+        self.gcode_filepath = self.gcodes_folder + "/drawing.gcode"
         end = time.time()
         return {"message": "GCode generated", "filePath": self.gcode_filepath, "time": end - start}
     

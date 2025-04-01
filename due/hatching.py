@@ -9,7 +9,25 @@ class HatchingType(Enum):
 def points_to_polygons(points):
     polygons = []
     current_polygon = []
-
+    indexFirstPoint = 0
+    indexLastPoint = 0
+    indexLastLaserOff = 0
+    laser_on = False
+    for index, point in enumerate(points):
+        if point[2] == 0:
+            # Laser off
+            indexLastPoint = index - 1
+            if indexLastPoint >= indexFirstPoint and laser_on:
+                #current_polygon.append(points[indexFirstPoint : indexLastPoint + 1])
+                current_polygon.append([(p[0], p[1]) for p in points[indexFirstPoint : indexLastPoint + 1]])
+                polygons.append(current_polygon)
+            indexLastLaserOff = index
+            laser_on = False
+        if index == indexLastLaserOff + 1 and point[2] != 0:
+            # Laser on - inicia um novo polígono
+            laser_on = True
+            indexFirstPoint = index
+            current_polygon = []
     return polygons
 
 def generate_hatching(hatching_type: HatchingType, polygon: Polygon, line_spacing: float, power: float):
@@ -22,7 +40,9 @@ def generate_hatching(hatching_type: HatchingType, polygon: Polygon, line_spacin
 def generate_vertical_hatching(polygon: Polygon, line_spacing: float, power: float):
     """Gera hatching vertical dentro de um polígono e formata no estilo (X, Y, Potência)."""
     min_x, min_y, max_x, max_y = polygon.bounds  # Obtém os limites do polígono
+    print ("min_x: ", min_x, " min_y: ", min_y, " max_x: ", max_x, " max_y: ", max_y)
     hatching_points = [(min_x, min_y, 0)]  # Posição inicial com potência 0
+    print ("min_x: ", min_x, " min_y: ", min_y, " max_x: ", max_x, " max_y: ", max_y)
     
     y = min_y
     while y <= max_y:
