@@ -5,6 +5,7 @@ setup(
         "pyusb",
         "fastapi",
         "uvicorn",
-        "svg-to-gcode"
+        "svg-to-gcode",
+        "shapely"
     ],
 )
