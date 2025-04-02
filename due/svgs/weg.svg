@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="2500"
+   height="2500"
+   viewBox="0 0 192.756 192.756"
+   version="1.1"
+   id="svg4"
+   sodipodi:docname="weg-electric-motors.svg"
+   inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="namedview4"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.1274"
+     inkscape:cx="859.49764"
+     inkscape:cy="2021.1931"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4" />
+  <g
+     fill-rule="evenodd"
+     clip-rule="evenodd"
+     id="g4">
+    <path
+       d="m 12.088,37.049 h -0.641 v 93.644 H 77.832 V 63.346 H 62.545 v 51.953 H 52.282 V 62.705 H 36.996 v 52.594 H 27.375 V 52.442 H 181.309 V 37.049 Z"
+       id="path2"
+       style="display:inline" />
+    <path
+       d="m 141.115,63.346 h -0.641 v 67.347 h 24.906 v 10.902 H 12.088 v 14.111 h 169.22 v -92.36 z m 14.645,16.035 h 9.621 v 36.56 h -9.621 z"
+       id="path3"
+       style="display:inline" />
+    <path
+       d="M 131.494,105.678 V 63.346 H 88.093 v 67.347 h 42.76 V 115.941 H 103.38 v -10.264 h 28.114 z M 103.381,78.74 h 12.186 v 12.187 h -12.186 z"
+       id="path4"
+       style="display:inline" />
+  </g>
+</svg>
