@@ -64,7 +64,6 @@ def convert_points_to_hatching(points):
     
     hatching_points = []
     for polygon in polygons:
-        polygon = Polygon(polygon[0])
         print("Polígono: ", polygon)
         hatching_points += generate_hatching(HatchingType.Vertical, polygon, line_spacing=0.5, power=555.0)
 

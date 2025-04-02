@@ -18,8 +18,7 @@ def points_to_polygons(points):
             # Laser off
             indexLastPoint = index - 1
             if indexLastPoint >= indexFirstPoint and laser_on:
-                #current_polygon.append(points[indexFirstPoint : indexLastPoint + 1])
-                current_polygon.append([(p[0], p[1]) for p in points[indexFirstPoint : indexLastPoint + 1]])
+                current_polygon = Polygon([(p[0], p[1]) for p in points[indexFirstPoint : indexLastPoint + 1]])
                 polygons.append(current_polygon)
             indexLastLaserOff = index
             laser_on = False
@@ -102,6 +101,15 @@ def generate_vertical_hatching(polygon: Polygon, line_spacing: float, power: flo
         y += line_spacing  # Próxima linha vertical
     
     return hatching_points
+
+# def add_hatching_points(hatching_points, segment, power):
+#     """Adiciona os pontos da linha de hatching ao G-code."""
+#     x1, y1 = segment.coords[0]
+#     x2, y2 = segment.coords[-1]
+#     hatching_points.append((x1, y1, 0))  # Move sem potência
+#     hatching_points.append((x1, y1, power))  # Ativa potência
+#     hatching_points.append((x2, y2, power))  # Finaliza linha
+#     hatching_points.append((x2, y2, 0))  # Desliga potência
 
 # Exemplo: Criando um polígono (retângulo)
 polygon = Polygon([(0, 0), (50, 0), (50, 50), (0, 50)])  # Quadrado 50x50
