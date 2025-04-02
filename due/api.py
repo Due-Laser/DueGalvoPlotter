@@ -79,8 +79,8 @@ class MachineAPI:
         """Gera o G-Code a partir do SVG passado."""
         start = time.time()
         self.svg_filepath = request.filePath
-        convert_svg_to_gcode(self.svg_filepath, self.gcodes_folder + "/drawing.gcode")
-        self.gcode_filepath = self.gcodes_folder + "/drawing.gcode"
+        convert_svg_to_gcode(self.svg_filepath, self.gcodes_folder + "drawing.gcode")
+        self.gcode_filepath = self.gcodes_folder + "drawing.gcode"
         end = time.time()
         return {"message": "GCode generated", "filePath": self.gcode_filepath, "time": end - start}
     

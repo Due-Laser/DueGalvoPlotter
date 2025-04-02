@@ -32,10 +32,43 @@ def points_to_polygons(points):
 
 def generate_hatching(hatching_type: HatchingType, polygon: Polygon, line_spacing: float, power: float):
     match hatching_type:
-        #case HatchingType.Horizontal:
-        #    return generate_horizontal_hatching(polygon, line_spacing, power)
+        case HatchingType.Horizontal:
+            return generate_horizontal_hatching(polygon, line_spacing, power)
         case HatchingType.Vertical:
             return generate_vertical_hatching(polygon, line_spacing, power)
+        
+def generate_horizontal_hatching(polygon: Polygon, line_spacing: float, power: float):
+    """Gera hatching vertical dentro de um polígono e formata no estilo (X, Y, Potência)."""
+    min_x, min_y, max_x, max_y = polygon.bounds  # Obtém os limites do polígono
+    print ("min_x: ", min_x, " min_y: ", min_y, " max_x: ", max_x, " max_y: ", max_y)
+    hatching_points = [(min_x, min_y, 0)]  # Posição inicial com potência 0
+    print ("min_x: ", min_x, " min_y: ", min_y, " max_x: ", max_x, " max_y: ", max_y)
+    
+    x = min_x
+    while x <= max_x:
+        line = LineString([(x, min_y), (x, max_y)])
+        clipped_line = polygon.intersection(line)  # Mantém apenas a parte dentro do polígono
+        
+        if not clipped_line.is_empty:
+            if clipped_line.geom_type == "MultiLineString":
+                for segment in clipped_line.geoms:
+                    x1, y1 = segment.coords[0]
+                    x2, y2 = segment.coords[-1]
+                    hatching_points.append((x1, y1, 0))  # Move para início da linha sem potência
+                    hatching_points.append((x1, y1, power))  # Ativa potência
+                    hatching_points.append((x2, y2, power))  # Final da linha com potência
+                    hatching_points.append((x2, y2, 0))  # Desativa potência
+            else:
+                x1, y1 = clipped_line.coords[0]
+                x2, y2 = clipped_line.coords[-1]
+                hatching_points.append((x1, y1, 0))  # Move sem potência
+                hatching_points.append((x1, y1, power))  # Ativa potência
+                hatching_points.append((x2, y2, power))  # Finaliza linha
+                hatching_points.append((x2, y2, 0))  # Desliga potência
+        
+        x += line_spacing  # Próxima linha horizontal
+    
+    return hatching_points
 
 def generate_vertical_hatching(polygon: Polygon, line_spacing: float, power: float):
     """Gera hatching vertical dentro de um polígono e formata no estilo (X, Y, Potência)."""
@@ -66,7 +99,7 @@ def generate_vertical_hatching(polygon: Polygon, line_spacing: float, power: flo
                 hatching_points.append((x2, y2, power))  # Finaliza linha
                 hatching_points.append((x2, y2, 0))  # Desliga potência
         
-        y += line_spacing  # Próxima linha horizontal
+        y += line_spacing  # Próxima linha vertical
     
     return hatching_points
 

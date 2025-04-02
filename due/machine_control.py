@@ -34,7 +34,7 @@ class MachineControl():
         while not self.stop_job:
             print("loop " + str(i))
             hatching_points = utils.convert_points_to_hatching(points)
-            points = points.append(hatching_points)
+            points += hatching_points
             self.convert_gcode_to_light_job(points)
             await asyncio.sleep(0.1)  # Simula espera não bloqueante
             self.controller.wait_for_machine_idle()
@@ -73,6 +73,8 @@ class MachineControl():
         points = utils.parse_gcode(self.gcode_filepath)
         
         print("mark loop start")
+        hatching_points = utils.convert_points_to_hatching(points)
+        points += hatching_points
         self.convert_gcode_to_mark_job(points)
         await asyncio.sleep(0.1)  # Simula espera não bloqueante
         self.controller.wait_for_machine_idle()

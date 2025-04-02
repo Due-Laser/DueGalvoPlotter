@@ -59,6 +59,7 @@ def parse_gcode(file_path):
     return points
 
 def convert_points_to_hatching(points):
+    start_time = time.time()
     polygons = points_to_polygons(points)
     
     hatching_points = []
@@ -68,4 +69,6 @@ def convert_points_to_hatching(points):
         hatching_points += generate_hatching(HatchingType.Vertical, polygon, line_spacing=5.0, power=555.0)
 
     print ("Hatching points: ", hatching_points)
+    end_time = time.time()
+    print ("Tempo de conversão em hatching: {:.2f} segundos".format(end_time - start_time))
     return hatching_points
