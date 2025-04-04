@@ -112,9 +112,9 @@ def generate_vertical_hatching(polygon: Polygon, line_spacing: float, power: flo
 #     hatching_points.append((x2, y2, 0))  # Desliga potência
 
 # Exemplo: Criando um polígono (retângulo)
-polygon = Polygon([(0, 0), (50, 0), (50, 50), (0, 50)])  # Quadrado 50x50
-hatching_gcode = generate_vertical_hatching(polygon, line_spacing=5.0, power=555.0)
+#polygon = Polygon([(0, 0), (50, 0), (50, 50), (0, 50)])  # Quadrado 50x50
+#hatching_gcode = generate_vertical_hatching(polygon, line_spacing=5.0, power=555.0)
 
 # Exibir o resultado
-for point in hatching_gcode:
-    print(point)
+#for point in hatching_gcode:
+#    print(point)
