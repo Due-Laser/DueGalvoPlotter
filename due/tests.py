@@ -14,16 +14,16 @@ def process_polygons(polygons):
     for i in range(0, len(polygons)):
         current_polygon = polygons[i]
         previous_polygon = polygons[i - 1]
-        print("Polígono atual:", list(current_polygon.exterior.coords)[0], ">", list(current_polygon.exterior.coords)[1], "| Horário:", current_polygon.exterior.is_ccw)
+        #print("Polígono atual:", list(current_polygon.exterior.coords)[0], ">", list(current_polygon.exterior.coords)[1], "| Horário:", current_polygon.exterior.is_ccw)
         if current_polygon.exterior.is_ccw:
             # Polígono é pai (anti-horário)
             if isPreviousPolygonHole:
-                print("Polígono anterior: ", previous_polygon)
-                print("Polígono atual: ", current_polygon)
+                #print("Polígono anterior: ", previous_polygon)
+                #print("Polígono atual: ", current_polygon)
                 shell = list(current_polygon.exterior.coords)
                 hole = list(previous_polygon.exterior.coords)
                 processed_polygon = Polygon(shell, [hole])
-                print("Polígono processado:", processed_polygon)
+                #print("Polígono processado:", processed_polygon)
                 processed_polygons.append(processed_polygon)
             else:
                 processed_polygons.append(current_polygon)

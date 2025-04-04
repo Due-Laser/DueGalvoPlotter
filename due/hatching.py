@@ -72,9 +72,9 @@ def generate_horizontal_hatching(polygon: Polygon, line_spacing: float, power: f
 def generate_vertical_hatching(polygon: Polygon, line_spacing: float, power: float):
     """Gera hatching vertical dentro de um polígono e formata no estilo (X, Y, Potência)."""
     min_x, min_y, max_x, max_y = polygon.bounds  # Obtém os limites do polígono
-    print ("min_x: ", min_x, " min_y: ", min_y, " max_x: ", max_x, " max_y: ", max_y)
+    #print ("min_x: ", min_x, " min_y: ", min_y, " max_x: ", max_x, " max_y: ", max_y)
     hatching_points = [(min_x, min_y, 0)]  # Posição inicial com potência 0
-    print ("min_x: ", min_x, " min_y: ", min_y, " max_x: ", max_x, " max_y: ", max_y)
+    #print ("min_x: ", min_x, " min_y: ", min_y, " max_x: ", max_x, " max_y: ", max_y)
     
     y = min_y
     while y <= max_y:
@@ -91,12 +91,22 @@ def generate_vertical_hatching(polygon: Polygon, line_spacing: float, power: flo
                     hatching_points.append((x2, y2, power))  # Final da linha com potência
                     hatching_points.append((x2, y2, 0))  # Desativa potência
             else:
-                x1, y1 = clipped_line.coords[0]
-                x2, y2 = clipped_line.coords[-1]
-                hatching_points.append((x1, y1, 0))  # Move sem potência
-                hatching_points.append((x1, y1, power))  # Ativa potência
-                hatching_points.append((x2, y2, power))  # Finaliza linha
-                hatching_points.append((x2, y2, 0))  # Desliga potência
+                if clipped_line.geom_type == "LineString":
+                    x1, y1 = clipped_line.coords[0]
+                    x2, y2 = clipped_line.coords[-1]
+                    hatching_points.append((x1, y1, 0))
+                    hatching_points.append((x1, y1, power))
+                    hatching_points.append((x2, y2, power))
+                    hatching_points.append((x2, y2, 0))
+                elif clipped_line.geom_type == "GeometryCollection":
+                    for geom in clipped_line.geoms:
+                        if geom.geom_type == "LineString":
+                            x1, y1 = geom.coords[0]
+                            x2, y2 = geom.coords[-1]
+                            hatching_points.append((x1, y1, 0))
+                            hatching_points.append((x1, y1, power))
+                            hatching_points.append((x2, y2, power))
+                            hatching_points.append((x2, y2, 0))
         
         y += line_spacing  # Próxima linha vertical
     
